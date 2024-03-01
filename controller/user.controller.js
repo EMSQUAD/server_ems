@@ -80,5 +80,43 @@ exports.userController = {
       } catch (error) {
         res.status(500).json(new ServerError(error));
       }
-    }
+    },
+
+    async loginUser(req, res) {
+      const { id_use, password } = req.body;
+  
+      try {
+        // Check user credentials (replace this with your actual logic)
+        const user = await userRepository.findByCredentials(id_use, password);
+  
+        if (user) {
+          res.status(200).json({
+            status: 200,
+            message: "Login successful",
+            data: user,
+          });
+        } else {
+          throw new NotFoundError("Invalid credentials");
+        }
+      } catch (error) {
+        console.error(`Error during login: ${error.message}`);
+        if (error instanceof ServerError) {
+          res.status(500).json({
+            status: 500,
+            message: "Internal Server Error",
+          });
+        } else {
+          res.status(error.status || 500).json({
+            status: error.status || 500,
+            message: error.message,
+          });
+        }
+      }
+    },
+
+
+
+
+
+
 };
