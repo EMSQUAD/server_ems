@@ -15,4 +15,4 @@ const userSchema = new Schema(
   
    collection: "coll-ems-user",versionKey: false  },); 
   
-module.exports = model("user", userSchema);
+module.exports = model("User", userSchema);
