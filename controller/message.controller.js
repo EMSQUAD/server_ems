@@ -1,70 +1,81 @@
-// message.controller.js
+const MessageRepository = require("../repository/message.repository");
+const messageRepository = new MessageRepository();
+const { ServerError, NotFoundError } = require("../errors/error");
 
-const Message = require('../models/messages.model');
-
-// Controller to create a new message
-exports.createMessage = async (req, res) => {
-  try {
-    const { id_use, text, imageUrl } = req.body;
-    const message = new Message({ id_use, text, imageUrl });
-    const savedMessage = await message.save();
-    res.status(201).json(savedMessage);
-  } catch (error) {
-    console.error('Error creating message:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-};
-
-// Controller to get all messages
-exports.getAllMessages = async (req, res) => {
-  try {
-    const messages = await Message.find();
-    res.json(messages);
-  } catch (error) {
-    console.error('Error fetching messages:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-};
-
-// Controller to get a single message by ID
-exports.getMessageById = async (req, res) => {
-  try {
-    const message = await Message.findById(req.params.id);
-    if (!message) {
-      return res.status(404).json({ error: 'Message not found' });
+exports.messageController = {
+  async getAllMessages(req, res) {
+    try {
+      const messages = await messageRepository.find();
+      if (!messages || messages.length === 0) {
+        throw new NotFoundError("Messages not found");
+      }
+      res.status(200).json({
+        status: 200,
+        message: "Messages retrieved successfully",
+        data: messages,
+      });
+    } catch (error) {
+      console.error(`Error: ${error.message}`);
+      if (error instanceof ServerError) {
+        res.status(500).json({
+          status: 500,
+          message: "Internal Server Error",
+        });
+      } else {
+        res.status(error.status || 500).json({
+          status: error.status || 500,
+          message: error.message,
+        });
+      }
     }
-    res.json(message);
-  } catch (error) {
-    console.error('Error fetching message:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-};
+  },
 
-// Controller to update a message by ID
-exports.updateMessageById = async (req, res) => {
-  try {
-    const { id_use, text, imageUrl } = req.body;
-    const updatedMessage = await Message.findByIdAndUpdate(req.params.id, { id_use, text, imageUrl }, { new: true });
-    if (!updatedMessage) {
-      return res.status(404).json({ error: 'Message not found' });
+  async getMessageById(req, res) {
+    try {
+      const message = await messageRepository.retrieve(req.params.id);
+      if (!message) {
+        throw new NotFoundError("Message not found");
+      }
+      res.status(200).json(message);
+    } catch (error) {
+      console.error(`Error: ${error.message}`);
+      res.status(500).json(new ServerError(error));
     }
-    res.json(updatedMessage);
-  } catch (error) {
-    console.error('Error updating message:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-};
+  },
 
-// Controller to delete a message by ID
-exports.deleteMessageById = async (req, res) => {
-  try {
-    const deletedMessage = await Message.findByIdAndDelete(req.params.id);
-    if (!deletedMessage) {
-      return res.status(404).json({ error: 'Message not found' });
+  async createMessage(req, res) {
+    try {
+      const message = await messageRepository.create(req.body);
+      res.status(201).json(message);
+    } catch (error) {
+      console.error(`Error: ${error.message}`);
+      res.status(500).json(new ServerError(error));
     }
-    res.json({ message: 'Message deleted successfully' });
-  } catch (error) {
-    console.error('Error deleting message:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+  },
+
+  async updateMessage(req, res) {
+    try {
+      const message = await messageRepository.update(req.params.id, req.body);
+      if (!message) {
+        throw new NotFoundError("Message not found");
+      }
+      res.status(200).json(message);
+    } catch (error) {
+      console.error(`Error: ${error.message}`);
+      res.status(500).json(new ServerError(error));
+    }
+  },
+
+  async deleteMessage(req, res) {
+    try {
+      const message = await messageRepository.delete(req.params.id);
+      if (!message) {
+        throw new NotFoundError("Message not found");
+      }
+      res.status(200).json(message);
+    } catch (error) {
+      console.error(`Error: ${error.message}`);
+      res.status(500).json(new ServerError(error));
+    }
+  },
 };

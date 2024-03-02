@@ -20,6 +20,9 @@ app.use('/user', userRouter);
 const { eventRouter } = require('./router/event.router');
 app.use('/event', eventRouter);
 
+const { eventRouter } = require('./router/event.router');
+app.use('/event', eventRouter);
+
 app.post('/user', async (req, res) => {
     const { id_use, password } = req.body;
 
