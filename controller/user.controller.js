@@ -98,10 +98,10 @@ exports.userController = {
               id_use: user.id_use,
               first_name: user.first_name,
               last_name: user.last_name,
+              phone: user.phone,
               status_ability: user.status_ability,
               image: user.image,
               email: user.email,
-              role: user.role,
             },
           });
         } else {
