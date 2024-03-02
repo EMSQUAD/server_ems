@@ -1,20 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const messageController = require('../controllers/message.controller');
 
-// Route to create a new message
-router.post('/', messageController.createMessage);
+// Define your message routes here
+router.get('/', (req, res) => {
+    // Handle GET request to retrieve messages
+    res.send('GET request to /messages endpoint');
+});
 
-// Route to get all messages
-router.get('/', messageController.getAllMessages);
+router.post('/', (req, res) => {
+    // Handle POST request to create a new message
+    res.send('POST request to /messages endpoint');
+});
 
-// Route to get a single message by ID
-router.get('/:id', messageController.getMessageById);
-
-// Route to update a message by ID
-router.put('/:id', messageController.updateMessageById);
-
-// Route to delete a message by ID
-router.delete('/:id', messageController.deleteMessageById);
-
+// Export the router instance
 module.exports = router;
