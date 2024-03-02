@@ -33,6 +33,17 @@ async delete(id) {
   return this.storage.delete(id);
 }
 
+async findByCredentials(id_use, password) {
+  try {
+    const user = await this.storage.findOne({ id_use, password });
+    return user;
+  } catch (error) {
+    console.error(`Error in findByCredentials: ${error.message}`);
+    throw new ServerError('Internal Server Error');
+  }
+};
+
+
 };
 
 
