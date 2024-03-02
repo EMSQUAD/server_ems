@@ -1,6 +1,6 @@
 // message.controller.js
 
-const Message = require('../models/message.model');
+const Message = require('../models/messages.model');
 
 // Controller to create a new message
 exports.createMessage = async (req, res) => {
