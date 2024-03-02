@@ -1,72 +1,26 @@
-// require('dotenv').config();
-// const express = require('express');
-// const bodyParser = require('body-parser');
-// // const fetch = require('node-fetch');
-// // const uuid = require('uuid');
-// const logger = require('morgan');
-// // const User = require('../models/user.model');
-
-// // const User = require('./models/user.model');
-// const cors = require('cors');
-// const app = express();
-// const port = 3000;
-
-// app.use(cors());
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: true }));
-// app.use(logger('dev'));
-
-
-// const {userRouter} = require('./router/user.router');
-// app.use('/user', userRouter);
-
-// const{eventRouter}=require('./router/event.router');
-// app.use('/event',eventRouter);
-
-
-
-
-
-// app.use(bodyParser.json());
-
-
-
-
-
-// app.listen(port, () => {
-//     console.log(`Server is running at http://localhost:${port}`);
-// });
-
-
 require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
+const fetch = require('node-fetch');
 const logger = require('morgan');
 const bcrypt = require('bcrypt');
-const fetch = require('node-fetch');
 const User = require('./models/user.model');
-const Message = require('./models/messages.model');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 
-// Routes
-const userRouter = require('./router/user.router');
+const { userRouter } = require('./router/user.router');
 app.use('/user', userRouter);
 
-const eventRouter = require('./router/event.router');
+const { eventRouter } = require('./router/event.router');
 app.use('/event', eventRouter);
 
-const messageRouter = require('./router/messages.router');
-app.use('/messages', messageRouter);
-
-// User Authentication
-app.post('/login', async (req, res) => {
+app.post('/user', async (req, res) => {
     const { id_use, password } = req.body;
 
     try {
@@ -93,8 +47,12 @@ app.post('/login', async (req, res) => {
     }
 });
 
-// Audio Recording and Sending
 let recordedAudio = null;
+
+app.post('/startRecording', (req, res) => {
+    console.log('Recording started...');
+    res.sendStatus(200);
+});
 
 app.post('/startRecording', (req, res) => {
     console.log('Recording started...');
@@ -117,7 +75,7 @@ app.get('/getRecordedAudio', (req, res) => {
 
 app.post('/sendAudioMessage', async (req, res) => {
     const { channelId, authToken } = req.body;
-    const audioData = recordedAudio;
+    const audioData = recordedAudio; // Get recorded audio data from the previous requests
 
     if (!channelId || !authToken || !audioData) {
         return res.status(400).send('Missing channelId, authToken, or audioData');
