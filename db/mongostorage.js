@@ -12,13 +12,14 @@ class MongoStorage extends EventEmitter {
 
   connect() {
     const connectionUrl = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}/${process.env.DB_NAME}?retryWrites=true&w=majority`;
-    mongoose.connect(connectionUrl, { useNewUrlParser: true, useUnifiedTopology: true })
+    mongoose.connect(connectionUrl, { useNewUrlParser: true })
       .then(() => console.log(`Connected to ${this.entityName} collection`))
       .catch(err => {
-        console.error(`Connection error: ${err}`);
+        console.error(`Connection error to ${this.entityName} collection: ${err}`);
         process.exit(1); // Exit process on connection error
       });
   }
+  
 
   async find(query = {}) {
     try {
