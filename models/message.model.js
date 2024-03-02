@@ -14,7 +14,7 @@ const messageSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-});
+}, { collection: "coll-ems-messages", versionKey: false });
 
 const Message = mongoose.model('Message', messageSchema);
 
