@@ -99,6 +99,7 @@ exports.userController = {
               first_name: user.first_name,
               last_name: user.last_name,
               phone: user.phone,
+              type_user: user.type_user,
               status_ability: user.status_ability,
               image: user.image,
               email: user.email,
