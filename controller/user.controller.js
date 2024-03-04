@@ -93,7 +93,17 @@ exports.userController = {
           res.status(200).json({
             status: 200,
             message: "Login successful",
-            data: user,
+            // data: user,
+            data: {
+              id_use: user.id_use,
+              first_name: user.first_name,
+              last_name: user.last_name,
+              phone: user.phone,
+              type_user: user.type_user,
+              status_ability: user.status_ability,
+              image: user.image,
+              email: user.email,
+            },
           });
         } else {
           throw new NotFoundError("Invalid credentials");
