@@ -6,7 +6,7 @@ const logger = require('morgan');
 const bcrypt = require('bcrypt');
 const User = require('./models/user.model');
 const cors = require('cors');
-
+const { Expo } = require('expo-server-sdk');
 
 const app = express();
 const port = 3000;
@@ -16,6 +16,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger('dev'));
 app.use(bodyParser.json());
+const expo = new Expo();
+
 
 const { userRouter } = require('./router/user.router');
 app.use('/user', userRouter);
@@ -108,6 +110,41 @@ app.post('/user', async (req, res) => {
 //         res.status(500).send('Failed to send audio message');
 //     }
 // });
+
+// New endpoint to send push notifications
+app.post('/sendNotification', async (req, res) => {
+    const { title, body } = req.body;
+
+    // Retrieve Expo Push Tokens from MongoDB for all users
+    const allUsers = await User.find({});
+    const allTokens = allUsers.map((user) => user.expoPushToken).filter(Boolean); // Filter out undefined/null tokens
+
+    // Prepare messages
+    const messages = allTokens.map((token) => ({
+        to: token,
+        sound: 'default',
+        title: title,
+        body: body,
+        data: { someData: 'goes here' },
+    }));
+
+    // Send push notifications
+    const chunks = expo.chunkPushNotifications(messages);
+    const tickets = [];
+
+    for (const chunk of chunks) {
+        try {
+            const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+            tickets.push(...ticketChunk);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    res.json({ success: true, tickets });
+});
+
+
 
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
