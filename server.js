@@ -1,46 +1,63 @@
 require('dotenv').config();
 const express = require('express');
+const dgram = require('dgram');
 const bodyParser = require('body-parser');
 const fetch = require('node-fetch');
 const logger = require('morgan');
 const bcrypt = require('bcrypt');
-const User = require('./models/user.model');
 const cors = require('cors');
-
+const { User } = require('./server/models/user.model');
 
 const app = express();
-const port = 3000;
 app.use(cors());
+const port = 3000;
+
+const socket = dgram.createSocket('udp4');
+const dgram_port = 3001;
+
+socket.on('listening', () => {
+  var address = socket.address();
+  console.log('UDP Server listening on ' + address.address + ":" + address.port);
+});
+socket.on('message', (message, remote) => {
+  console.log(remote.address + ':' + remote.port + ' - ' + message);
+  socket.send(message, 0, message.length, remote.port, remote.address, (err) => {
+    if (err) {
+      console.log(err);
+    }
+  });
+});
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 
-const { userRouter } = require('./router/user.router');
+
+// const {userRouter} = require('./server/router/user.router');
+// app.use('/user', userRouter);
+
+const { userRouter } = require('./server/router/user.router');
 app.use('/user', userRouter);
 
-const { eventRouter } = require('./router/event.router');
+const { eventRouter } = require('./server/router/event.router');
 app.use('/event', eventRouter);
 
-const { messageRouter } = require('./router/message.router');
-app.use('/messages', messageRouter);
+const { walkieRouter } = require('./server/router/walkie.router');
+app.use('/walkie', walkieRouter);
 
 app.post('/user', async (req, res) => {
-    const { id_use, password } = req.body;
+  const { id_use, password } = req.body;
 
-    try {
-        console.log('Received login request with id_use:', id_use);
+  try {
+    const user = await User.findOne({ id_use });
 
-        const user = await User.findOne({ id_use });
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
 
-        console.log('Data retrieved from MongoDB:', user);
-
-        if (!user) {
-            return res.status(404).json({ success: false, message: 'User not found' });
-        }
-
-        const passwordMatch = await bcrypt.compare(password, user.password);
+    const passwordMatch = await bcrypt.compare(password, user.password);
 
         if (passwordMatch) {
             // Include push tokens in the user data
@@ -63,6 +80,7 @@ app.post('/user', async (req, res) => {
         return res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 });
+
 
 // let recordedAudio = null;
 
@@ -120,6 +138,8 @@ app.post('/user', async (req, res) => {
 //     }
 // });
 
+socket.bind(dgram_port);
 app.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`);
+  console.log(`Server is running at http://localhost:${port}`);
 });
+
