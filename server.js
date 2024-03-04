@@ -27,7 +27,7 @@ socket.on('message', (message, remote) => {
     }
   });
 });
-soc
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
