@@ -44,8 +44,8 @@ app.use('/user', userRouter);
 const { eventRouter } = require('./router/event.router');
 app.use('/event', eventRouter);
 
-const { walkieRouter } = require('./router/walkie.router');
-app.use('/walkie', walkieRouter);
+// const { walkieRouter } = require('./router/walkie.router');
+// app.use('/walkie', walkieRouter);
 
 app.post('/user', async (req, res) => {
   const { id_use, password } = req.body;
