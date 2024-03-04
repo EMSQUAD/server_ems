@@ -27,7 +27,7 @@ socket.on('message', (message, remote) => {
     }
   });
 });
-
+soc
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -38,13 +38,13 @@ app.use(bodyParser.json());
 // const {userRouter} = require('./server/router/user.router');
 // app.use('/user', userRouter);
 
-const { userRouter } = require('./server/router/user.router');
+const { userRouter } = require('./router/user.router');
 app.use('/user', userRouter);
 
-const { eventRouter } = require('./server/router/event.router');
+const { eventRouter } = require('./router/event.router');
 app.use('/event', eventRouter);
 
-const { walkieRouter } = require('./server/router/walkie.router');
+const { walkieRouter } = require('./router/walkie.router');
 app.use('/walkie', walkieRouter);
 
 app.post('/user', async (req, res) => {
@@ -59,26 +59,26 @@ app.post('/user', async (req, res) => {
 
     const passwordMatch = await bcrypt.compare(password, user.password);
 
-        if (passwordMatch) {
-            // Include push tokens in the user data
-            const usersWithPushTokens = await User.find({ type_user: { $in: ['Comander', 'Solider'] }, push_token: { $exists: true } });
-            const usersData = usersWithPushTokens.map(u => ({
-                _id: u._id,
-                id_use: u.id_use,
-                first_name: u.first_name,
-                last_name: u.last_name,
-                type_user: u.type_user,
-                push_token: u.push_token
-            }));
+    if (passwordMatch) {
+      // Include push tokens in the user data
+      const usersWithPushTokens = await User.find({ type_user: { $in: ['Comander', 'Solider'] }, push_token: { $exists: true } });
+      const usersData = usersWithPushTokens.map(u => ({
+        _id: u._id,
+        id_use: u.id_use,
+        first_name: u.first_name,
+        last_name: u.last_name,
+        type_user: u.type_user,
+        push_token: u.push_token
+      }));
 
-            return res.json({ success: true, message: 'Login successful', users: usersData });
-        } else {
-            return res.status(401).json({ success: false, message: 'Incorrect password' });
-        }
-    } catch (error) {
-        console.error('Error during authentication:', error);
-        return res.status(500).json({ success: false, message: 'Internal Server Error' });
+      return res.json({ success: true, message: 'Login successful', users: usersData });
+    } else {
+      return res.status(401).json({ success: false, message: 'Incorrect password' });
     }
+  } catch (error) {
+    console.error('Error during authentication:', error);
+    return res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
 });
 
 
