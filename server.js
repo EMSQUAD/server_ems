@@ -6,7 +6,9 @@ const logger = require('morgan');
 const bcrypt = require('bcrypt');
 const User = require('./models/user.model');
 const cors = require('cors');
+const FirebaseService = require('./db/FirebaseService');
 const { Expo } = require('expo-server-sdk');
+const jsonParser = bodyParser.json();
 
 const app = express();
 const port = 3000;
@@ -45,7 +47,18 @@ app.post('/user', async (req, res) => {
         const passwordMatch = await bcrypt.compare(password, user.password);
 
         if (passwordMatch) {
-            return res.json({ success: true, message: 'Login successful', user });
+            // Include push tokens in the user data
+            const usersWithPushTokens = await User.find({ type_user: { $in: ['Comander', 'Solider'] }, push_token: { $exists: true } });
+            const usersData = usersWithPushTokens.map(u => ({
+                _id: u._id,
+                id_use: u.id_use,
+                first_name: u.first_name,
+                last_name: u.last_name,
+                type_user: u.type_user,
+                push_token: u.push_token
+            }));
+
+            return res.json({ success: true, message: 'Login successful', users: usersData });
         } else {
             return res.status(401).json({ success: false, message: 'Incorrect password' });
         }
@@ -54,6 +67,22 @@ app.post('/user', async (req, res) => {
         return res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 });
+
+app.post("/registerPushToken", jsonParser, async (req, res ) => {
+    const userId = String(req.body._id);
+    const token = String(req.body.token);
+    await FirebaseService.saveToken(userId, token);
+    res.status(200).send("success");
+});
+
+
+
+
+
+
+
+
+
 
 // let recordedAudio = null;
 
