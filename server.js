@@ -7,7 +7,7 @@ const bcrypt = require('bcrypt');
 const User = require('./models/user.model');
 const cors = require('cors');
 const FirebaseService = require('./db/FirebaseService');
-const { Expo } = require('expo-server-sdk');
+// const { Expo } = require('expo-server-sdk');
 const jsonParser = bodyParser.json();
 
 const app = express();
@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-const expo = new Expo();
+// const expo = new Expo();
 
 
 const { userRouter } = require('./router/user.router');
@@ -140,38 +140,38 @@ app.post("/registerPushToken", jsonParser, async (req, res ) => {
 //     }
 // });
 
-// New endpoint to send push notifications
-app.post('/sendNotification', async (req, res) => {
-    const { title, body } = req.body;
+// // New endpoint to send push notifications
+// app.post('/sendNotification', async (req, res) => {
+//     const { title, body } = req.body;
 
-    // Retrieve Expo Push Tokens from MongoDB for all users
-    const allUsers = await User.find({});
-    const allTokens = allUsers.map((user) => user.expoPushToken).filter(Boolean); // Filter out undefined/null tokens
+//     // Retrieve Expo Push Tokens from MongoDB for all users
+//     const allUsers = await User.find({});
+//     const allTokens = allUsers.map((user) => user.expoPushToken).filter(Boolean); // Filter out undefined/null tokens
 
-    // Prepare messages
-    const messages = allTokens.map((token) => ({
-        to: token,
-        sound: 'default',
-        title: title,
-        body: body,
-        data: { someData: 'goes here' },
-    }));
+//     // Prepare messages
+//     const messages = allTokens.map((token) => ({
+//         to: token,
+//         sound: 'default',
+//         title: title,
+//         body: body,
+//         data: { someData: 'goes here' },
+//     }));
 
-    // Send push notifications
-    const chunks = expo.chunkPushNotifications(messages);
-    const tickets = [];
+//     // Send push notifications
+//     const chunks = expo.chunkPushNotifications(messages);
+//     const tickets = [];
 
-    for (const chunk of chunks) {
-        try {
-            const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-            tickets.push(...ticketChunk);
-        } catch (error) {
-            console.error(error);
-        }
-    }
+//     for (const chunk of chunks) {
+//         try {
+//             const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+//             tickets.push(...ticketChunk);
+//         } catch (error) {
+//             console.error(error);
+//         }
+//     }
 
-    res.json({ success: true, tickets });
-});
+//     res.json({ success: true, tickets });
+// });
 
 
 
