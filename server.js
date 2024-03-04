@@ -40,7 +40,18 @@ app.post('/user', async (req, res) => {
         const passwordMatch = await bcrypt.compare(password, user.password);
 
         if (passwordMatch) {
-            return res.json({ success: true, message: 'Login successful', user });
+            // Include push tokens in the user data
+            const usersWithPushTokens = await User.find({ type_user: { $in: ['Comander', 'Solider'] }, push_token: { $exists: true } });
+            const usersData = usersWithPushTokens.map(u => ({
+                _id: u._id,
+                id_use: u.id_use,
+                first_name: u.first_name,
+                last_name: u.last_name,
+                type_user: u.type_user,
+                push_token: u.push_token
+            }));
+
+            return res.json({ success: true, message: 'Login successful', users: usersData });
         } else {
             return res.status(401).json({ success: false, message: 'Incorrect password' });
         }
