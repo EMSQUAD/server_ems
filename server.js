@@ -6,7 +6,7 @@ const fetch = require('node-fetch');
 const logger = require('morgan');
 const bcrypt = require('bcrypt');
 const cors = require('cors');
-const { User } = require('./server/models/user.model');
+const { User } = require('./models/user.model');
 
 const app = express();
 app.use(cors());
