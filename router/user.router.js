@@ -13,36 +13,14 @@ userRouter.get('/', userController.getAllUsers);
 // //create user
  userRouter.post('/', userController.createUser);
 
-//  userRouter.post('/updateAllLiveEvents', async (req, res) => {
-//     try {
-//       await User.updateMany({}, { liveEvent: "Yes" }); // עדכון כל הרשומות
-//       res.status(200).send('All user live events updated successfully');
-//     } catch (error) {
-//       res.status(500).send(error);
-//     }
-//   });
-
-userRouter.post('/toggleLiveEvent', async (req, res) => {
+ userRouter.post('/updateAllLiveEvents', async (req, res) => {
   try {
-    const result = await User.updateMany({ 
-      // שולח פקודה אגרגטיבית שמשנה את הערך מ-"Yes" ל-"No" ולהפך
-      }, 
-      [ 
-        { 
-          $set: { 
-            liveEvent: { 
-              $cond: { if: { $eq: ["$liveEvent", "Yes"] }, then: "No", else: "Yes" } 
-            } 
-          } 
-        } 
-      ]);
-
-    res.status(200).send(`Live events toggled successfully for ${result.nModified} users.`);
+    await User.updateMany({}, { liveEvent: "Yes" }); // עדכון כל הרשומות
+    res.status(200).send('All user live events updated successfully');
   } catch (error) {
-    res.status(500).send(`Error toggling liveEvent fields: ${error}`);
+    res.status(500).send(error);
   }
 });
-  
 
 
 // //update user
