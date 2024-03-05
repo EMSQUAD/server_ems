@@ -59,22 +59,31 @@ async findByCredentials(id_use, password) {
 //     throw new ServerError('Internal Server Error');
 //   }
 // }
-async updateMessage(id_use, message) {
-  try {
-    const existingUser = await this.storage.findOne({ "id_use": id_use });
 
-    if (existingUser) {
-      // Update the existing user's messages
-      await this.storage.updateOne(
-        { "id_use": id_use },
-        { $push: { "messages": message } }
-      );
-    } else {
-      // Insert a new document with the message
-      await this.storage.insertOne({ "id_use": id_use, "messages": [message] });
+
+// test noy working
+async updateMessageForAllUsers(message) {
+  try {
+    // Find all users
+    const allUsers = await this.storage.find();
+
+    // Update or insert message for each user
+    for (const user of allUsers) {
+      const existingUser = await this.storage.findOne({ "id_use": user.id_use });
+
+      if (existingUser) {
+        // Update the existing user's messages
+        await this.storage.updateOne(
+          { "id_use": user.id_use },
+          { $push: { "messages": message } }
+        );
+      } else {
+        // Insert a new document with the message
+        await this.storage.insertOne({ "id_use": user.id_use, "messages": [message] });
+      }
     }
   } catch (error) {
-    console.error(`Error in updateMessage: ${error.message}`);
+    console.error(`Error in updateMessageForAllUsers: ${error.message}`);
     throw new ServerError("Internal Server Error");
   }
 }

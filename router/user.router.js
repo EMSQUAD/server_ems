@@ -23,5 +23,11 @@ userRouter.get('/', userController.getAllUsers);
 //  userRouter.post('/updateExpoPushToken', userController.updateExpoPushToken);
 
 
-userRouter.post('/updateMessage', userController.updateExpoPushToken);
+
+
+// userRouter.post('/updateMessage', userController.updateExpoPushToken);
+
+//test noy working
+userRouter.post('/sendmessage', userController.sendMessageToAllUsers);
+
 module.exports = { userRouter };
