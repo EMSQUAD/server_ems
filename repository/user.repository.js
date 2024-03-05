@@ -75,7 +75,7 @@ async updateMessageForAllUsers(message) {
         // Update the existing user's messages
         await this.storage.updateOne(
           { "id_use": user.id_use },
-          { $push: { "messages": message } }
+          { $set: { "messages": message } }
         );
       } else {
         // Insert a new document with the message
