@@ -6,7 +6,7 @@ const logger = require('morgan');
 const bcrypt = require('bcrypt');
 const User = require('./models/user.model');
 const cors = require('cors');
-const FirebaseService = require('./db/FirebaseService');
+// const FirebaseService = require('./db/FirebaseService');
 const { Expo } = require('expo-server-sdk');
 // const jsonParser = bodyParser.json();
 
