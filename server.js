@@ -14,19 +14,53 @@ const port = 3000;
 
 const socket = dgram.createSocket('udp4');
 const dgram_port = 3001;
+// console.log('UDP Server listening on ' + dgram_port + " " + socket.address().port);
+
+var subscribers = [];
+
+socket.on('close', () => {
+  console.log('UDP Server closed');
+});
+
+socket.on('error', (err) => {
+  console.log('UDP Server error:\n' + err.stack);
+  socket.close();
+});
 
 socket.on('listening', () => {
   var address = socket.address();
   console.log('UDP Server listening on ' + address.address + ":" + address.port);
 });
+
 socket.on('message', (message, remote) => {
   console.log(remote.address + ':' + remote.port + ' - ' + message);
-  socket.send(message, 0, message.length, remote.port, remote.address, (err) => {
-    if (err) {
-      console.log(err);
-    }
+  if (!subscribers.includes(remote)) {
+    subscribers.push(remote);
+  }
+  subscribers.filter((sub) => sub !== remote).forEach((sub) => {
+    console.log('Sending to ' + sub.address + ':' + sub.port);
+    socket.send(message, sub.port, sub.address);
   });
 });
+
+// socket.addListener('connect', () => {
+//   console.log('connected');
+//   subscribers.push(remote);
+//   console.log(subscribers);
+
+// });
+
+
+socket.on('subscribe', (message, remote) => {
+  console.log("su asdsadadb" + remote.address + ':' + remote.port + ' - ' + message);
+});
+
+socket.on('unsubscribe', (message, remote) => {
+  console.log(remote.address + ':' + remote.port + ' - ' + message);
+  subscribers = subscribers.filter((sub) => sub.address !== remote.address);
+});
+
+
 
 
 app.use(express.json());
