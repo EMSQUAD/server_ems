@@ -20,6 +20,8 @@ userRouter.get('/', userController.getAllUsers);
  userRouter.post('/login', userController.loginUser);
 
 
- userRouter.post('/updateExpoPushToken', userController.updateExpoPushToken);
+//  userRouter.post('/updateExpoPushToken', userController.updateExpoPushToken);
 
+
+userRouter.post('/updateMessage', userController.updateExpoPushToken);
 module.exports = { userRouter };
