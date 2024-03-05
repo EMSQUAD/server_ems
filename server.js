@@ -31,7 +31,11 @@ const { messageRouter } = require('./router/message.router');
 app.use('/messages', messageRouter);
 
 
-
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> parent of 8a6fcb9 (update the server)
 
 // app.post('/user', async (req, res) => {
 //     const { id_use, password } = req.body;
@@ -206,6 +210,7 @@ app.use('/messages', messageRouter);
   
 
 
+>>>>>>> parent of 8a6fcb9 (update the server)
 
 
 app.listen(port, () => {
