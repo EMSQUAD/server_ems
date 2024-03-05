@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
-const fetch = require('node-fetch');
+// const fetch = require('node-fetch');
 const logger = require('morgan');
 const bcrypt = require('bcrypt');
 const User = require('./models/user.model');
