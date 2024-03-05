@@ -59,15 +59,38 @@ exports.userController = {
     },
 
   async updateUser(req, res) {
+      // try {
+
+
+      //   const user = await userRepository.update(req.params.id, req.body);
+      //   if(!user){
+      //     throw new NotFoundError("User not found");
+      //   }
+      //   res.status(200).json(user);
+      // } catch (error) {
+      //   res.status(500).json(new ServerError(error));
+      // }
       try {
-        const user = await userRepository.update(req.params.id, req.body);
-        if(!user){
+        const { id } = req.params;
+        const { expoPushToken } = req.body;
+  
+        // Update the user with the new Expo Push Token
+        const updatedUser = await userRepository.update(id, { expoPushToken });
+  
+        if (!updatedUser) {
           throw new NotFoundError("User not found");
         }
-        res.status(200).json(user);
+  
+        res.status(200).json(updatedUser);
       } catch (error) {
-        res.status(500).json(new ServerError(error));
+        console.error(`Error during user update: ${error.message}`);
+        if (error instanceof NotFoundError) {
+          res.status(404).json({ success: false, message: error.message });
+        } else {
+          res.status(500).json(new ServerError(error));
+        }
       }
+    
     },
 
   async deleteUser(req, res) {
