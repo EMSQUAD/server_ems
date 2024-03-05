@@ -8,7 +8,7 @@ const User = require('./models/user.model');
 const cors = require('cors');
 const FirebaseService = require('./db/FirebaseService');
 
-const jsonParser = bodyParser.json();
+
 
 const app = express();
 const port = 3000;
@@ -65,21 +65,6 @@ app.post('/user', async (req, res) => {
         return res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 });
-
-app.post("/registerPushToken", jsonParser, async (req, res ) => {
-    const userId = String(req.body._id);
-    const token = String(req.body.token);
-    await FirebaseService.saveToken(userId, token);
-    res.status(200).send("success");
-});
-
-
-
-
-
-
-
-
 
 
 // let recordedAudio = null;
