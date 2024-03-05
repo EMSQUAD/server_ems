@@ -29,6 +29,13 @@ async update(id, user) {
   return this.storage.update(id, user);
 }
 
+async updateAllLiveEvents(){
+  return YourMongoDBModel.updateMany(
+      { liveEvent: "No" }, // Filter
+      { $set: { liveEvent: "Yes" } } // Update
+  );
+};
+
 async delete(id) {
   return this.storage.delete(id);
 }
@@ -87,18 +94,4 @@ async updateMessageForAllUsers(message) {
     throw new ServerError("Internal Server Error");
   }
 }
-
-
-
 };
-
-
-
-
-
-
-
-
-
-
-  

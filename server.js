@@ -30,6 +30,8 @@ app.use('/event', eventRouter);
 const { messageRouter } = require('./router/message.router');
 app.use('/messages', messageRouter);
 
+
+
 // app.post('/user', async (req, res) => {
 //     const { id_use, password } = req.body;
 

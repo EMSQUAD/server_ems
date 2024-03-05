@@ -12,6 +12,7 @@ const userSchema = new Schema(
     certifications: { type: String },
     image: { type: String },
     message: { type: String },
+    liveEvent: { type: String },
 
   },{
   

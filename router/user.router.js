@@ -14,6 +14,7 @@ userRouter.get('/', userController.getAllUsers);
  userRouter.post('/', userController.createUser);
 // //update user
  userRouter.put('/:id', userController.updateUser);
+ userRouter.put('/updateLiveEvents', userController.updateAllLiveEvents);
 // //delete user
  userRouter.delete('/:id', userController.deleteUser);
 

@@ -71,6 +71,17 @@ exports.userController = {
 
   },
 
+
+  async updateAllLiveEvents(req, res){
+    try {
+        const result = await userRepository.updateAllLiveEvents();
+        res.status(200).json({ message: 'Live events updated successfully', result });
+    } catch (error) {
+        console.error('Error updating live events:', error);
+        res.status(500).json({ message: 'Failed to update live events', error });
+    }
+},
+
   async deleteUser(req, res) {
     try {
       const user = await userRepository.delete(req.params.id);
