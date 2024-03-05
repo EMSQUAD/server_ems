@@ -11,6 +11,8 @@ const userSchema = new Schema(
     status_ability: { type: String, required: true },
     certifications: { type: String },
     image: { type: String },
+    message: { type: String },
+
   },{
   
    collection: "coll-ems-user",versionKey: false  },); 
