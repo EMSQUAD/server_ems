@@ -43,23 +43,41 @@ async findByCredentials(id_use, password) {
   }
 }
 
-async updateExpoPushToken(id_use, expoPushToken) {
+// async updateExpoPushToken(id_use, expoPushToken) {
+//   try {
+//     const existingUser = await this.storage.findOne({ "id_use": id_use });
+
+//     if (existingUser) {
+//       // Update the existing user's expoPushToken
+//       await this.storage.updateOne({ "id_use": id_use }, { $set: { "expoPushToken": expoPushToken } });
+//     } else {
+//       // Insert a new document with the expoPushToken
+//       await this.storage.insertOne({ "id_use": id_use, "expoPushToken": expoPushToken });
+//     }
+//   } catch (error) {
+//     console.error(`Error in updateExpoPushToken: ${error.message}`);
+//     throw new ServerError('Internal Server Error');
+//   }
+// }
+async updateMessage(id_use, message) {
   try {
     const existingUser = await this.storage.findOne({ "id_use": id_use });
 
     if (existingUser) {
-      // Update the existing user's expoPushToken
-      await this.storage.updateOne({ "id_use": id_use }, { $set: { "expoPushToken": expoPushToken } });
+      // Update the existing user's messages
+      await this.storage.updateOne(
+        { "id_use": id_use },
+        { $push: { "messages": message } }
+      );
     } else {
-      // Insert a new document with the expoPushToken
-      await this.storage.insertOne({ "id_use": id_use, "expoPushToken": expoPushToken });
+      // Insert a new document with the message
+      await this.storage.insertOne({ "id_use": id_use, "messages": [message] });
     }
   } catch (error) {
-    console.error(`Error in updateExpoPushToken: ${error.message}`);
-    throw new ServerError('Internal Server Error');
+    console.error(`Error in updateMessage: ${error.message}`);
+    throw new ServerError("Internal Server Error");
   }
 }
-
 
 
 

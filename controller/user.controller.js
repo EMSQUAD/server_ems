@@ -128,24 +128,56 @@ exports.userController = {
 
 
 
+  // async updateExpoPushToken(req, res) {
+  //   try {
+  //     const { id_use, expoPushToken } = req.body;
+
+  //     // Validate the request body
+  //     if (!id_use || !expoPushToken) {
+  //       throw new BadRequestError("Both id_use and expoPushToken are required");
+  //     }
+
+  //     // Update or insert expoPushToken in MongoDB
+  //     await userRepository.updateExpoPushToken(id_use, expoPushToken);
+
+  //     res.status(200).json({
+  //       status: 200,
+  //       message: "ExpoPushToken updated successfully",
+  //     });
+  //   } catch (error) {
+  //     console.error(`Error during updateExpoPushToken: ${error.message}`);
+  //     if (error instanceof ServerError) {
+  //       res.status(500).json({
+  //         status: 500,
+  //         message: "Internal Server Error",
+  //       });
+  //     } else {
+  //       res.status(error.status || 500).json({
+  //         status: error.status || 500,
+  //         message: error.message,
+  //       });
+  //     }
+  //   }
+  // }
+
   async updateExpoPushToken(req, res) {
     try {
-      const { id_use, expoPushToken } = req.body;
+      const { id_use, message } = req.body;
 
       // Validate the request body
-      if (!id_use || !expoPushToken) {
-        throw new BadRequestError("Both id_use and expoPushToken are required");
+      if (!id_use || !message) {
+        throw new BadRequestError("Both id_use and message are required");
       }
 
-      // Update or insert expoPushToken in MongoDB
-      await userRepository.updateExpoPushToken(id_use, expoPushToken);
+      // Update or insert message in MongoDB
+      await userRepository.updateMessage(id_use, message);
 
       res.status(200).json({
         status: 200,
-        message: "ExpoPushToken updated successfully",
+        message: "Message updated successfully",
       });
     } catch (error) {
-      console.error(`Error during updateExpoPushToken: ${error.message}`);
+      console.error(`Error during updateMessage: ${error.message}`);
       if (error instanceof ServerError) {
         res.status(500).json({
           status: 500,
@@ -159,8 +191,6 @@ exports.userController = {
       }
     }
   }
-
-
 
 
 };
