@@ -41,7 +41,26 @@ async findByCredentials(id_use, password) {
     console.error(`Error in findByCredentials: ${error.message}`);
     throw new ServerError('Internal Server Error');
   }
-};
+}
+
+async updateExpoPushToken(id_use, expoPushToken) {
+  try {
+    const existingUser = await this.storage.findOne({ "id_use": id_use });
+
+    if (existingUser) {
+      // Update the existing user's expoPushToken
+      await this.storage.updateOne({ "id_use": id_use }, { $set: { "expoPushToken": expoPushToken } });
+    } else {
+      // Insert a new document with the expoPushToken
+      await this.storage.insertOne({ "id_use": id_use, "expoPushToken": expoPushToken });
+    }
+  } catch (error) {
+    console.error(`Error in updateExpoPushToken: ${error.message}`);
+    throw new ServerError('Internal Server Error');
+  }
+}
+
+
 
 
 };
