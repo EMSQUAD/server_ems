@@ -12,11 +12,11 @@ class MongoStorage extends EventEmitter {
 
   connect() {
     const connectionUrl = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}/${process.env.DB_NAME}?retryWrites=true&w=majority`;
-    mongoose.connect(connectionUrl, { useNewUrlParser: true })
+    mongoose.connect(connectionUrl)
       .then(() => console.log(`Connected to ${this.entityName} collection`))
       .catch(err => {
         console.error(`Connection error to ${this.entityName} collection: ${err}`);
-        process.exit(1); // Exit process on connection error
+        process.exit(1); 
       });
   }
   
@@ -41,9 +41,10 @@ class MongoStorage extends EventEmitter {
 
   async findById(id) {
     try {
-      return await this.model.findById(id);
+      const user = await this.model.findOne({ id_use: id });
+      return user;
     } catch (error) {
-      console.error('Error in findById method:', error);
+      console.error(`Error in findById method: ${error.message}`);
       throw error;
     }
   }
@@ -58,11 +59,16 @@ class MongoStorage extends EventEmitter {
     }
   }
 
-  async update(id, data) {
+  async update(id, updatedUser) {
     try {
-      return await this.model.findByIdAndUpdate(id, data, { new: true });
+      const numericId = parseInt(id); // Convert the string to a number
+      const user = await this.model.findOneAndUpdate({ id_use: numericId }, updatedUser, {
+        new: true,
+      });
+  
+      return user;
     } catch (error) {
-      console.error('Error in update method:', error);
+      console.error(`Error in update method: ${error.message}`);
       throw error;
     }
   }
