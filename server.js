@@ -31,6 +31,7 @@ const { messageRouter } = require('./router/message.router');
 app.use('/messages', messageRouter);
 
 
+<<<<<<< HEAD
 
 
 // app.post('/user', async (req, res) => {
@@ -203,6 +204,8 @@ app.use('/messages', messageRouter);
 //       res.status(500).json({ success: false, message: 'Internal Server Error' });
 //     }
 //   });
+=======
+>>>>>>> 84cfc7adacaa9417f997c32addab2d8ab3d9813b
   
 
 
