@@ -32,7 +32,10 @@ app.use('/messages', messageRouter);
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of 8a6fcb9 (update the server)
 
 // app.post('/user', async (req, res) => {
 //     const { id_use, password } = req.body;
