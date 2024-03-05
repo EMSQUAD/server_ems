@@ -76,38 +76,93 @@ app.use('/messages', messageRouter);
 // });
 
 
-// New endpoint to send push notifications
-app.post('/sendNotification', async (req, res) => {
+// // New endpoint to send push notifications
+// app.post('/sendNotification', async (req, res) => {
+//     const { title, body } = req.body;
+
+//     // Retrieve Expo Push Tokens from MongoDB for all users
+//     const allUsers = await User.find({});
+//     const allTokens = allUsers.map((user) => user.expoPushToken).filter(Boolean); // Filter out undefined/null tokens
+
+//     // Prepare messages
+//     const messages = allTokens.map((token) => ({
+//         to: token,
+//         sound: 'default',
+//         title: title,
+//         body: body,
+//         data: { someData: 'goes here' },
+//     }));
+
+//     // Send push notifications
+//     const chunks = expo.chunkPushNotifications(messages);
+//     const tickets = [];
+
+//     for (const chunk of chunks) {
+//         try {
+//             const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+//             tickets.push(...ticketChunk);
+//         } catch (error) {
+//             console.error(error);
+//         }
+//     }
+
+//     res.json({ success: true, tickets });
+// });
+
+
+
+
+
+
+////test notification///////////
+// Existing imports and setup code...
+
+// New endpoint to send push notifications to all soldiers
+app.post('/sendNotificationToSoldiers', async (req, res) => {
     const { title, body } = req.body;
 
-    // Retrieve Expo Push Tokens from MongoDB for all users
-    const allUsers = await User.find({});
-    const allTokens = allUsers.map((user) => user.expoPushToken).filter(Boolean); // Filter out undefined/null tokens
+    try {
+        // Find all soldiers
+        const allSoldiers = await User.find({ type_user: 'Soldier' });
+        const soldierTokens = allSoldiers.map((soldier) => soldier.expoPushToken).filter(Boolean);
 
-    // Prepare messages
-    const messages = allTokens.map((token) => ({
-        to: token,
-        sound: 'default',
-        title: title,
-        body: body,
-        data: { someData: 'goes here' },
-    }));
-
-    // Send push notifications
-    const chunks = expo.chunkPushNotifications(messages);
-    const tickets = [];
-
-    for (const chunk of chunks) {
-        try {
-            const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-            tickets.push(...ticketChunk);
-        } catch (error) {
-            console.error(error);
+        if (soldierTokens.length === 0) {
+            return res.json({ success: false, message: 'No soldiers found' });
         }
-    }
 
-    res.json({ success: true, tickets });
+        // Prepare messages
+        const messages = soldierTokens.map((token) => ({
+            to: token,
+            sound: 'default',
+            title: title,
+            body: body,
+            data: { someData: 'goes here' },
+        }));
+
+        // Send push notifications
+        const chunks = expo.chunkPushNotifications(messages);
+        const tickets = [];
+
+        for (const chunk of chunks) {
+            try {
+                const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+                tickets.push(...ticketChunk);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        res.json({ success: true, tickets });
+    } catch (error) {
+        console.error('Error sending notifications:', error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
 });
+
+// Existing code for other routes and server start...
+
+
+
 
 
 

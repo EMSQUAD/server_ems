@@ -19,4 +19,5 @@ userRouter.get('/', userController.getAllUsers);
 
  userRouter.post('/login', userController.loginUser);
 
+
 module.exports = { userRouter };

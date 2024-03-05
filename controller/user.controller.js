@@ -103,6 +103,7 @@ exports.userController = {
               status_ability: user.status_ability,
               image: user.image,
               email: user.email,
+              expoPushToken: user.expoPushToken,
             },
           });
         } else {
