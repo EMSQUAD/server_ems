@@ -22,26 +22,26 @@ userRouter.get('/', userController.getAllUsers);
 //     }
 //   });
 
-userRouter.post('/toggleLiveEvent', async (req, res) => {
-  try {
-    const result = await User.updateMany({ 
-      // שולח פקודה אגרגטיבית שמשנה את הערך מ-"Yes" ל-"No" ולהפך
-      }, 
-      [ 
-        { 
-          $set: { 
-            liveEvent: { 
-              $cond: { if: { $eq: ["$liveEvent", "Yes"] }, then: "No", else: "Yes" } 
-            } 
-          } 
-        } 
-      ]);
+// userRouter.post('/toggleLiveEvent', async (req, res) => {
+//   try {
+//     const result = await User.updateMany({ 
+//       // שולח פקודה אגרגטיבית שמשנה את הערך מ-"Yes" ל-"No" ולהפך
+//       }, 
+//       [ 
+//         { 
+//           $set: { 
+//             liveEvent: { 
+//               $cond: { if: { $eq: ["$liveEvent", "Yes"] }, then: "No", else: "Yes" } 
+//             } 
+//           } 
+//         } 
+//       ]);
 
-    res.status(200).send(`Live events toggled successfully for ${result.nModified} users.`);
-  } catch (error) {
-    res.status(500).send(`Error toggling liveEvent fields: ${error}`);
-  }
-});
+//     res.status(200).send(`Live events toggled successfully for ${result.nModified} users.`);
+//   } catch (error) {
+//     res.status(500).send(`Error toggling liveEvent fields: ${error}`);
+//   }
+// });
   
 
 
