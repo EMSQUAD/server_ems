@@ -117,51 +117,90 @@ app.use('/messages', messageRouter);
 ////test notification///////////
 // Existing imports and setup code...
 
-// New endpoint to send push notifications to all soldiers
-app.post('/sendNotificationToSoldiers', async (req, res) => {
-    const { title, body } = req.body;
+// // New endpoint to send push notifications to all soldiers
+// app.post('/sendNotificationToSoldiers', async (req, res) => {
+//     const { title, body } = req.body;
 
-    try {
-        // Find all soldiers
-        const allSoldiers = await User.find({ type_user: 'Soldier' });
-        const soldierTokens = allSoldiers.map((soldier) => soldier.expoPushToken).filter(Boolean);
+//     try {
+//         // Find all soldiers
+//         const allSoldiers = await User.find({ type_user: 'Soldier' });
+//         const soldierTokens = allSoldiers.map((soldier) => soldier.expoPushToken).filter(Boolean);
 
-        if (soldierTokens.length === 0) {
-            return res.json({ success: false, message: 'No soldiers found' });
-        }
+//         if (soldierTokens.length === 0) {
+//             return res.json({ success: false, message: 'No soldiers found' });
+//         }
 
-        // Prepare messages
-        const messages = soldierTokens.map((token) => ({
-            to: token,
-            sound: 'default',
-            title: title,
-            body: body,
-            data: { someData: 'goes here' },
-        }));
+//         // Prepare messages
+//         const messages = soldierTokens.map((token) => ({
+//             to: token,
+//             sound: 'default',
+//             title: title,
+//             body: body,
+//             data: { someData: 'goes here' },
+//         }));
 
-        // Send push notifications
-        const chunks = expo.chunkPushNotifications(messages);
-        const tickets = [];
+//         // Send push notifications
+//         const chunks = expo.chunkPushNotifications(messages);
+//         const tickets = [];
 
-        for (const chunk of chunks) {
-            try {
-                const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-                tickets.push(...ticketChunk);
-            } catch (error) {
-                console.error(error);
-            }
-        }
+//         for (const chunk of chunks) {
+//             try {
+//                 const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+//                 tickets.push(...ticketChunk);
+//             } catch (error) {
+//                 console.error(error);
+//             }
+//         }
 
-        res.json({ success: true, tickets });
-    } catch (error) {
-        console.error('Error sending notifications:', error);
-        res.status(500).json({ success: false, message: 'Internal Server Error' });
-    }
-});
+//         res.json({ success: true, tickets });
+//     } catch (error) {
+//         console.error('Error sending notifications:', error);
+//         res.status(500).json({ success: false, message: 'Internal Server Error' });
+//     }
+// });
 
 // Existing code for other routes and server start...
 
-
+app.post('/sendNotificationToSoldiers', async (req, res) => {
+    const { title, body } = req.body;
+  
+    try {
+      // Find all soldiers
+      const allSoldiers = await User.find({ type_user: 'Soldier', expoPushToken: { $exists: true } });
+  
+      if (allSoldiers.length === 0) {
+        return res.json({ success: false, message: 'No soldiers found with push tokens' });
+      }
+  
+      // Prepare messages
+      const messages = allSoldiers.map((soldier) => ({
+        to: soldier.expoPushToken,
+        sound: 'default',
+        title: title,
+        body: body,
+        data: { someData: 'goes here' },
+      }));
+  
+      // Send push notifications
+      const chunks = expo.chunkPushNotifications(messages);
+      const tickets = [];
+  
+      for (const chunk of chunks) {
+        try {
+          const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+          tickets.push(...ticketChunk);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+  
+      res.json({ success: true, tickets });
+    } catch (error) {
+      console.error('Error sending notifications:', error);
+      res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+  });
+  
 
 
 
