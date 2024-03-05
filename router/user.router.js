@@ -1,7 +1,7 @@
 const { Router } = require('express');
 
  const { userController } = require('../controller/user.controller');
- const User = require('../models/user.model');
+//  const User = require('../models/user.model');
 
 
 const userRouter = Router();
@@ -12,7 +12,6 @@ userRouter.get('/', userController.getAllUsers);
  userRouter.get('/:id', userController.getUserById);
 // //create user
  userRouter.post('/', userController.createUser);
-
 // //update user
  userRouter.put('/:id', userController.updateUser);
  userRouter.put('/updateLiveEvents', userController.updateAllLiveEvents);
