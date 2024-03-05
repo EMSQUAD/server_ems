@@ -14,21 +14,13 @@ userRouter.get('/', userController.getAllUsers);
  userRouter.post('/', userController.createUser);
 // //update user
  userRouter.put('/:id', userController.updateUser);
- userRouter.put('/updateLiveEvents', userController.updateAllLiveEvents);
+
 // //delete user
  userRouter.delete('/:id', userController.deleteUser);
 
  userRouter.post('/login', userController.loginUser);
 
 
-//  userRouter.post('/updateExpoPushToken', userController.updateExpoPushToken);
 
-
-
-
-// userRouter.post('/updateMessage', userController.updateExpoPushToken);
-
-//test noy working
-userRouter.put('/sendmessage', userController.sendMessageToAllUsers);
 
 module.exports = { userRouter };
