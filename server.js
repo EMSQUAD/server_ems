@@ -1,50 +1,86 @@
 require('dotenv').config();
 const express = require('express');
-const dgram = require('dgram');
-const bodyParser = require('body-parser');
+// const dgram = require('dgram');
+// const bodyParser = require('body-parser');
 const fetch = require('node-fetch');
 const logger = require('morgan');
 const bcrypt = require('bcrypt');
 const User = require('./models/user.model');
-const cors = require('cors');
 // const FirebaseService = require('./db/FirebaseService');
 const { Expo } = require('expo-server-sdk');
 // const jsonParser = bodyParser.json();
 
-const app = express();
-app.use(cors());
-const port = 3000;
 
-const socket = dgram.createSocket('udp4');
-const dgram_port = 3001;
+const app = express();
+const port = 4000;
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(logger('dev'));
+const expo = new Expo();
+
+const http = require("http").Server(app);
+const cors = require('cors');
+
+app.use(cors());
+
+const io = require('socket.io')(http, {
+  cors: {
+    origin: "<http://localhost:3000>"
+  }
+});
+
+//👇🏻 Add this before the app.get() block
+io.on('connection', (socket) => {
+  socket.emit('test', 'Hello, World!');
+  console.log(`⚡: ${socket.id} user just connected!`);
+
+  socket.on('cmessage', (message) => {
+    console.log('📩: Message received:', message);
+    socket.broadcast.emit('smessage', message);
+  });
+ 
+  socket.on('disconnect', () => {
+    console.log('🔥: A user disconnected');
+  });
+});
+
+
+
+
+
+
+
+
+// const socket = dgram.createSocket('udp4');
+// const dgram_port = 3001;
 // console.log('UDP Server listening on ' + dgram_port + " " + socket.address().port);
 
 var subscribers = [];
 
-socket.on('close', () => {
-  console.log('UDP Server closed');
-});
+// socket.on('close', () => {
+//   console.log('UDP Server closed');
+// });
 
-socket.on('error', (err) => {
-  console.log('UDP Server error:\n' + err.stack);
-  socket.close();
-});
+// socket.on('error', (err) => {
+//   console.log('UDP Server error:\n' + err.stack);
+//   socket.close();
+// });
 
-socket.on('listening', () => {
-  var address = socket.address();
-  console.log('UDP Server listening on ' + address.address + ":" + address.port);
-});
+// socket.on('listening', () => {
+//   var address = socket.address();
+//   console.log('UDP Server listening on ' + address.address + ":" + address.port);
+// });
 
-socket.on('message', (message, remote) => {
-  console.log(remote.address + ':' + remote.port + ' - ' + message);
-  if (!subscribers.includes(remote)) {
-    subscribers.push(remote);
-  }
-  subscribers.filter((sub) => sub !== remote).forEach((sub) => {
-    console.log('Sending to ' + sub.address + ':' + sub.port);
-    socket.send(message, sub.port, sub.address);
-  });
-});
+// socket.on('message', (message, remote) => {
+//   console.log(remote.address + ':' + remote.port + ' - ' + message);
+//   if (!subscribers.includes(remote)) {
+//     subscribers.push(remote);
+//   }
+//   subscribers.filter((sub) => sub !== remote).forEach((sub) => {
+//     console.log('Sending to ' + sub.address + ':' + sub.port);
+//     socket.send(message, sub.port, sub.address);
+//   });
+// });
 
 // socket.addListener('connect', () => {
 //   console.log('connected');
@@ -54,23 +90,20 @@ socket.on('message', (message, remote) => {
 // });
 
 
-socket.on('subscribe', (message, remote) => {
-  console.log("su asdsadadb" + remote.address + ':' + remote.port + ' - ' + message);
-});
+// socket.on('subscribe', (message, remote) => {
+//   console.log("su asdsadadb" + remote.address + ':' + remote.port + ' - ' + message);
+// });
 
-socket.on('unsubscribe', (message, remote) => {
-  console.log(remote.address + ':' + remote.port + ' - ' + message);
-  subscribers = subscribers.filter((sub) => sub.address !== remote.address);
-});
-
-
+// socket.on('unsubscribe', (message, remote) => {
+//   console.log(remote.address + ':' + remote.port + ' - ' + message);
+//   subscribers = subscribers.filter((sub) => sub.address !== remote.address);
+// });
 
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(logger('dev'));
-app.use(bodyParser.json());
-const expo = new Expo();
+
+
+
+
 
 
 const { userRouter } = require('./router/user.router');
@@ -215,15 +248,15 @@ app.use('/event', eventRouter);
 
 // app.post('/sendNotificationToSoldiers', async (req, res) => {
 //     const { title, body } = req.body;
-  
+
 //     try {
 //       // Find all soldiers
 //       const allSoldiers = await User.find({ type_user: 'Soldier', expoPushToken: { $exists: true } });
-  
+
 //       if (allSoldiers.length === 0) {
 //         return res.json({ success: false, message: 'No soldiers found with push tokens' });
 //       }
-  
+
 //       // Prepare messages
 //       const messages = allSoldiers.map((soldier) => ({
 //         to: soldier.expoPushToken,
@@ -232,11 +265,11 @@ app.use('/event', eventRouter);
 //         body: body,
 //         data: { someData: 'goes here' },
 //       }));
-  
+
 //       // Send push notifications
 //       const chunks = expo.chunkPushNotifications(messages);
 //       const tickets = [];
-  
+
 //       for (const chunk of chunks) {
 //         try {
 //           const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
@@ -245,7 +278,7 @@ app.use('/event', eventRouter);
 //           console.error(error);
 //         }
 //       }
-  
+
 //       res.json({ success: true, tickets });
 //     } catch (error) {
 //       console.error('Error sending notifications:', error);
@@ -253,8 +286,11 @@ app.use('/event', eventRouter);
 //     }
 // });
 
-socket.bind(dgram_port);
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
-});
+// socket.bind(dgram_port);
+// app.listen(port, () => {
+//   console.log(`Server is running at http://localhost:${port}`);
+// });
 
+http.listen(port, () => {
+  console.log(`socket listening on http://localhost:${port}`);
+});
