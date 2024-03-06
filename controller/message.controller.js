@@ -32,13 +32,15 @@ exports.messageController = {
 
   async getMessageById(req, res) {
     try {
+      console.log("Try");
       const message = await messageRepository.retrieve(req.params.id);
+      console.log(req.params.id);
+      console.log(message);
       if (!message) {
-        throw new NotFoundError("Message not found");
+        throw new NotFoundError("message not found");
       }
       res.status(200).json(message);
     } catch (error) {
-      console.error(`Error: ${error.message}`);
       res.status(500).json(new ServerError(error));
     }
   },

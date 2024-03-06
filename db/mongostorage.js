@@ -54,6 +54,21 @@ class MongoStorage extends EventEmitter {
     }
   }
 
+
+  async findByIdMessage(id) {
+    try {
+      const numericId = parseInt(id);
+      const message = await this.model.findOne({ id_use: numericId });
+  
+      return message;
+    } catch (error) {
+      console.error(`Error in findByIdMessage method: ${error.message}`);
+      throw error;
+    }
+  }
+  
+  
+
   async create(data) {
     try {
       const newUser = new this.model(data);
