@@ -32,7 +32,6 @@ exports.messageController = {
 
   async getMessageById(req, res) {
     try {
-      console.log("Try");
       const message = await messageRepository.retrieve(req.params.id);
       console.log(req.params.id);
       console.log(message);

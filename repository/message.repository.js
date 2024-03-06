@@ -16,7 +16,6 @@ module.exports = class MessageRepository {
     }
 
     async retrieve(id) {
-        console.log("im here");
         return this.storage.findByIdMessage(id);
     }
 
