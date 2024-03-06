@@ -44,6 +44,20 @@ async findByCredentials(id_use, password) {
   }
 }
 
+async updateSoldierMessages(updatedMessage = "You are a solider") {
+  try {
+    const filter = { type_user: "Solider" };
+    const update = { message: updatedMessage };
+    const result = await this.storage.updateMany(filter, update);
+    console.log(result);
+  } catch (error) {
+    console.error(`Error in updateSoldierMessages method: ${error.message}`);
+    throw error;
+  }
+}
+
+
+
 
 
 };

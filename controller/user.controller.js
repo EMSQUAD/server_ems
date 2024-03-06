@@ -1,6 +1,8 @@
 const UserRepository = require("../repository/user.repository");
 // const User = require('../models/user.model');
 
+
+
 const userRepository = new UserRepository();
 const {
   ServerError,
@@ -72,15 +74,18 @@ exports.userController = {
   },
 
 
-  async updateAllLiveEvents(req, res){
+  async updateSoldierMessages(req, res) {
     try {
-        const result = await userRepository.updateAllLiveEvents();
-        res.status(200).json({ message: 'Live events updated successfully', result });
+      const updatedMessage = req.body.message || "You are a solider";
+      await userRepository.updateSoldierMessages(updatedMessage);
+      res.status(200).json({ message: 'Soldier messages updated successfully' });
     } catch (error) {
-        console.error('Error updating live events:', error);
-        res.status(500).json({ message: 'Failed to update live events', error });
+      console.error('Error updating soldier messages:', error);
+      res.status(500).json({ error: 'Internal server error' });
     }
-},
+  },
+  
+
 
   async deleteUser(req, res) {
     try {
