@@ -118,14 +118,26 @@ class MongoStorage extends EventEmitter {
   }
   
 
+  // async delete(id) {
+  //   try {
+  //     return await this.model.findByIdAndDelete(id);
+  //   } catch (error) {
+  //     console.error("Error in delete method:", error);
+  //     throw error;
+  //   }
+  // }
   async delete(id) {
     try {
-      return await this.model.findByIdAndDelete(id);
+        // Since you are using a numerical ID, ensure it's properly converted
+        const numericId = parseInt(id);
+        // Use findOneAndDelete with the query matching `id_use` field
+        return await this.model.findOneAndDelete({ id_use: numericId });
     } catch (error) {
-      console.error("Error in delete method:", error);
-      throw error;
+        console.error("Error in delete method:", error);
+        throw error;
     }
-  }
+}
+
 }
 
 module.exports = MongoStorage;
