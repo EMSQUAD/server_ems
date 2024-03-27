@@ -118,8 +118,8 @@ exports.userController = {
             phone: user.phone,
             type_user: user.type_user,
             status_ability: user.status_ability,
-            image: user.image,
             certifications: user.certifications,
+            image: user.image,
             expoPushToken: user.expoPushToken,
           },
         });
