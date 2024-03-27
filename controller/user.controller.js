@@ -119,7 +119,7 @@ exports.userController = {
             type_user: user.type_user,
             status_ability: user.status_ability,
             image: user.image,
-            email: user.email,
+            certifications: user.certifications,
             expoPushToken: user.expoPushToken,
           },
         });
