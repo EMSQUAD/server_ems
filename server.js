@@ -1,27 +1,31 @@
 require('dotenv').config();
 const express = require('express');
 // const dgram = require('dgram');
-// const bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 // const fetch = require('node-fetch');
 const logger = require('morgan');
 const bcrypt = require('bcrypt');
 const User = require('./models/user.model');
-
+const cors = require('cors');
 
 // const jsonParser = bodyParser.json();
 
 
 const app = express();
-const port = 4000;
+const port = 3000;
+app.use(cors());
+
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger('dev'));
+app.use(bodyParser.json());
 
 
 const http = require("http").Server(app);
-const cors = require('cors');
+// const cors = require('cors');
 
-app.use(cors());
+
 
 const io = require('socket.io')(http, {
   cors: {
@@ -112,6 +116,9 @@ app.use('/user', userRouter);
 const { eventRouter } = require('./router/event.router');
 app.use('/event', eventRouter);
 
+
+const { messageRouter } = require('./router/message.router');
+app.use('/messages', messageRouter);
 // const { walkieRouter } = require('./router/walkie.router');
 // app.use('/walkie', walkieRouter);
 
