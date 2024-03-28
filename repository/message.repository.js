@@ -30,4 +30,8 @@ module.exports = class MessageRepository {
     async delete(id) {
         return this.storage.delete(id);
     }
+
+    async findAllByIdUse(idUse) {
+        return this.storage.find({ id_use: idUse });
+    }
 };

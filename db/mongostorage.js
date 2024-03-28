@@ -127,6 +127,11 @@ class MongoStorage extends EventEmitter {
     }
 }
 
+///message
+async findAllByIdUse(idUse) {
+  return this.storage.find({ id_use: idUse }); 
+}
+
 }
 
 module.exports = MongoStorage;
