@@ -8,6 +8,8 @@ messageRouter.get('/', messageController.getAllMessages);
 // Get message by ID
 messageRouter.get('/:id', messageController.getMessageById);
 
+messageRouter.get('/byIdUse/:id', messageController.getMessagesByIdUse); // This name is just a suggestion
+
 // Create message
 messageRouter.post('/', messageController.createMessage);
 
