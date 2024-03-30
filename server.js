@@ -12,7 +12,8 @@ const { Expo } = require('expo-server-sdk');
 
 
 const app = express();
-const port = 4000;
+const port = 3000;
+const s_port = 4000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger('dev'));
@@ -25,7 +26,7 @@ app.use(cors());
 
 const io = require('socket.io')(http, {
   cors: {
-    origin: "<http://localhost:3000>"
+    origin: "<http://localhost:"+s_port+">"
   }
 });
 
@@ -287,10 +288,10 @@ app.use('/event', eventRouter);
 // });
 
 // socket.bind(dgram_port);
-// app.listen(port, () => {
-//   console.log(`Server is running at http://localhost:${port}`);
-// });
+app.listen(port, () => {
+  console.log(`Server is running at http://localhost:${port}`);
+});
 
-http.listen(port, () => {
-  console.log(`socket listening on http://localhost:${port}`);
+http.listen(s_port, () => {
+  console.log(`socket listening on http://localhost:${s_port}`);
 });
