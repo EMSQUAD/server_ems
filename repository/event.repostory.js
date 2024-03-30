@@ -1,7 +1,7 @@
 const MongoStorage = require('../db/mongostorage');
 
 
-class EventRepository{
+module.exports = class EventRepository{
   constructor() {
     if(
     process.env.DB_HOST &&
@@ -33,7 +33,13 @@ async delete(id) {
 }
 
 };
-module.exports = EventRepository;
+
+
+
+
+
+
+
 
 
 

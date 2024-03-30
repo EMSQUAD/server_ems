@@ -16,7 +16,7 @@ module.exports = class MessageRepository {
     }
 
     async retrieve(id) {
-        return this.storage.findByIdMessage(id);
+        return this.storage.retrieve(id);
     }
 
     async create(message) {
@@ -29,9 +29,5 @@ module.exports = class MessageRepository {
 
     async delete(id) {
         return this.storage.delete(id);
-    }
-
-    async findAllByIdUse(idUse) {
-        return this.storage.find({ id_use: idUse });
     }
 };

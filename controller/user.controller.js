@@ -1,8 +1,6 @@
 const UserRepository = require("../repository/user.repository");
 // const User = require('../models/user.model');
 
-
-
 const userRepository = new UserRepository();
 const {
   ServerError,
@@ -73,20 +71,6 @@ exports.userController = {
 
   },
 
-
-  async updateSoldierMessages(req, res) {
-    try {
-      const updatedMessage = req.body.message || "You are a solider";
-      await userRepository.updateSoldierMessages(updatedMessage);
-      res.status(200).json({ message: 'Soldier messages updated successfully' });
-    } catch (error) {
-      console.error('Error updating soldier messages:', error);
-      res.status(500).json({ error: 'Internal server error' });
-    }
-  },
-  
-
-
   async deleteUser(req, res) {
     try {
       const user = await userRepository.delete(req.params.id);
@@ -118,8 +102,8 @@ exports.userController = {
             phone: user.phone,
             type_user: user.type_user,
             status_ability: user.status_ability,
-            certifications: user.certifications,
             image: user.image,
+            email: user.email,
             expoPushToken: user.expoPushToken,
           },
         });
@@ -142,6 +126,71 @@ exports.userController = {
     }
   },
 
+
+
+  // async updateExpoPushToken(req, res) {
+  //   try {
+  //     const { id_use, expoPushToken } = req.body;
+
+  //     // Validate the request body
+  //     if (!id_use || !expoPushToken) {
+  //       throw new BadRequestError("Both id_use and expoPushToken are required");
+  //     }
+
+  //     // Update or insert expoPushToken in MongoDB
+  //     await userRepository.updateExpoPushToken(id_use, expoPushToken);
+
+  //     res.status(200).json({
+  //       status: 200,
+  //       message: "ExpoPushToken updated successfully",
+  //     });
+  //   } catch (error) {
+  //     console.error(`Error during updateExpoPushToken: ${error.message}`);
+  //     if (error instanceof ServerError) {
+  //       res.status(500).json({
+  //         status: 500,
+  //         message: "Internal Server Error",
+  //       });
+  //     } else {
+  //       res.status(error.status || 500).json({
+  //         status: error.status || 500,
+  //         message: error.message,
+  //       });
+  //     }
+  //   }
+  // }
+
+  async updateExpoPushToken(req, res) {
+    try {
+      const { id_use, message } = req.body;
+
+      // Validate the request body
+      if (!id_use || !message) {
+        throw new BadRequestError("Both id_use and message are required");
+      }
+
+      // Update or insert message in MongoDB
+      await userRepository.updateMessage(id_use, message);
+
+      res.status(200).json({
+        status: 200,
+        message: "Message updated successfully",
+      });
+    } catch (error) {
+      console.error(`Error during updateMessage: ${error.message}`);
+      if (error instanceof ServerError) {
+        res.status(500).json({
+          status: 500,
+          message: "Internal Server Error",
+        });
+      } else {
+        res.status(error.status || 500).json({
+          status: error.status || 500,
+          message: error.message,
+        });
+      }
+    }
+  }
 
 
 };

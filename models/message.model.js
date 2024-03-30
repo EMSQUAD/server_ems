@@ -3,10 +3,9 @@ const { Schema, model } = require("mongoose");
 const messageSchema = new Schema(
   {
     id_use: { type: Number, required: true },
-    text: { type: String, required: true },
-    imageUrl: { type: String }, 
-    createdAt: { type: Date, default: Date.now },
-// Added field for image
+    message: { type: String, required: true },
+    timestamp: { type: Date, default: Date.now },
+    image: { type: String }, // Added field for image
     // You can add more fields as needed
   },
   {
