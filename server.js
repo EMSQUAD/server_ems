@@ -1,13 +1,13 @@
 require('dotenv').config();
 const express = require('express');
-// const dgram = require('dgram');
-// const bodyParser = require('body-parser');
-const fetch = require('node-fetch');
+const bodyParser = require('body-parser');
+// const fetch = require('node-fetch');
 const logger = require('morgan');
 const bcrypt = require('bcrypt');
 const User = require('./models/user.model');
-// const FirebaseService = require('./db/FirebaseService');
-const { Expo } = require('expo-server-sdk');
+const cors = require('cors');
+
+
 // const jsonParser = bodyParser.json();
 
 
@@ -17,7 +17,8 @@ const s_port = 4000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger('dev'));
-const expo = new Expo();
+app.use(bodyParser.json());
+
 
 const http = require("http").Server(app);
 const cors = require('cors');
