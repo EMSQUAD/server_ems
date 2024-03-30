@@ -12,7 +12,7 @@ const { Expo } = require('expo-server-sdk');
 
 
 const app = express();
-const port = 4000;
+const port = 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger('dev'));
@@ -25,7 +25,7 @@ app.use(cors());
 
 const io = require('socket.io')(http, {
   cors: {
-    origin: "<http://localhost:3000>"
+    origin: "<http://localhost:"+port+">"
   }
 });
 
